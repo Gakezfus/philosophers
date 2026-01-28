@@ -1,0 +1,81 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
+/*   Updated: 2026/01/28 19:53:35 by elkan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philo.h"
+
+#include <unistd.h>
+#include <pthread.h>
+#include <stdio.h>
+
+int	check_input(int argc, char *argv[]);
+
+int	main(int argc, char *argv[])
+{
+	int			index;
+	t_info		info;
+	pthread_t	*philo;
+
+	if (argc < 5 || argc > 6)
+	{
+		write(2, "Format: ./philo number_of_philosophers time_to_die \
+time_to_eat time_to_sleep \
+number_of_times_each_philosopher_must_eat (optional)\n", 130);
+		return (1);
+	}
+	if (check_input(argc, argv))
+		return (1);
+	setup(argc - 5, argv, &info);
+	philo = malloc(info.total_philo * sizeof(pthread_t));
+	info.forks = malloc((info.total_philo / 64 + 1) * sizeof(uint64_t));
+	info.m_forks = malloc((info.total_philo) * sizeof(pthread_mutex_t));
+	if (philo == NULL || info.forks == NULL)
+		return (write(2, "Memory error\n", 1), 1);
+	pthread_mutex_lock(&info.r_mutex);
+	index = 0;
+	while (index < info.total_philo)
+	{
+		pthread_mutex_init(&info.m_forks[index], NULL);
+		if (pthread_create(&philo[index++], NULL, philosopher_act, (void *)&info))
+			return (write(2, "Thread creation error\n", 23), 1);
+	}
+	pthread_mutex_unlock(&info.r_mutex);
+	// Waits for threads
+	index = 0;
+	while (index < info.total_philo)
+	{
+		pthread_join(philo[index++], NULL);
+	} 
+}
+
+int	check_input(int argc, char *argv[])
+{
+	int				index_1;
+	int				index_2;
+	long long int	num;
+
+	index_1 = 1;
+	while (index_1 < argc)
+	{
+		index_2 = 0;
+		while (argv[index_1][index_2])
+		{
+			if (argv[index_1][index_2] < '0' || '9' < argv[index_1][index_2])
+				return (write(2, "All characters must be numbers\n", 32), 1);
+			num = ft_atoll(argv[index_1]);
+			if (num <= 0)
+				return (write(2, "Numbers <= 0 or over/underflow\n", 32), 1);
+			index_2++;
+		}
+		index_1++;
+	}
+	return (0);
+}
