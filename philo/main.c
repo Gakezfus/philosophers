@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/28 19:53:35 by elkan            ###   ########.fr       */
+/*   Updated: 2026/01/29 18:55:41 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 		return (1);
 	setup(argc - 5, argv, &info);
 	philo = malloc(info.total_philo * sizeof(pthread_t));
-	info.forks = malloc((info.total_philo / 64 + 1) * sizeof(uint64_t));
-	info.m_forks = malloc((info.total_philo) * sizeof(pthread_mutex_t));
-	if (philo == NULL || info.forks == NULL)
+	if (philo == NULL || info.forks == NULL || info.m_forks == NULL)
 		return (write(2, "Memory error\n", 1), 1);
 	pthread_mutex_lock(&info.r_mutex);
 	index = 0;
@@ -47,6 +45,7 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 		if (pthread_create(&philo[index++], NULL, philosopher_act, (void *)&info))
 			return (write(2, "Thread creation error\n", 23), 1);
 	}
+	set_start_time(&info);
 	pthread_mutex_unlock(&info.r_mutex);
 	// Waits for threads
 	index = 0;

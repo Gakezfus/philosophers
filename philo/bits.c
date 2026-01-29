@@ -28,7 +28,7 @@
 // 		while (bit_array[i] != 0)
 // 		{
 // 			index = __builtin_ctzll(bit_array[i]);
-// 			printf("Even: %i\n", i * 64 + index);
+// 			printf(": %i\n", i * 64 + index);
 // 			bit_array[i] &= bit_array[i] - 1;
 // 		}
 // 	}

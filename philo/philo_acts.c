@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   philo_acts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:51:45 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/28 20:13:48 by elkan            ###   ########.fr       */
+/*   Updated: 2026/01/29 18:55:35 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 #include <sys/time.h>
 #include <stdio.h>
 
+void	*philosopher_act(void *i);
+void	update_times(info, philo, time);
+
 void	*philosopher_act(void *i)
 {
-	struct timeval	time;
 	t_philo			philo;
 	t_info			*info;
 
@@ -26,24 +28,24 @@ void	*philosopher_act(void *i)
 	philo.philo_num = info->philo_num;
 	info->philo_num++;
 	pthread_mutex_unlock(&(info->p_num_mutex));
-	philo.dom_hand = philo.philo_num % 2;
+	philo_setup(info, &philo);
 	pthread_mutex_lock(&info->r_mutex);
 	pthread_mutex_unlock(&info->r_mutex);
-	
-	// try to eat
-	gettimeofday(&time, NULL);
-	// print log that the philosopher has eaten
-	philo.die_time_s = time.tv_sec + info->starve_s
-		+ (time.tv_usec + info->starve_mcs) / 1000ll;
-	philo.die_time_mcs = (time.tv_usec + info->starve_mcs) % 1000000LL;
+	eating(info, &philo);
+	wait_till(philo.sleep_time_mcs, philo.die_time_mcs);
+	return_forks(info, &philo);
 	// try to sleep
-	philo.sleep_time_s = time.tv_sec + info->eat_s
-		+ (time.tv_usec + info->sleep_mcs) / 1000000LL;
-	philo.sleep_time_mcs = (time.tv_usec + info->eat_mcs) % 1000000LL;
 	// try to think
-	philo.think_time_s = philo.sleep_time_s + info->eat_s
-		+ (time.tv_usec + philo.think_time_mcs) / 1000000LL;
-	philo.think_time_mcs = (philo.sleep_time_mcs + philo.think_time_s)
-		% 1000000LL;
 	return (NULL);
+}
+
+void	update_times(t_info *info, t_philo *philo, struct timeval time_ate)
+{
+	long long unsigned int time_ate_ms;
+
+	time_ate_ms = time_ate.tv_sec * 1000000 + time_ate.tv_usec;
+	philo->die_time_mcs = time_ate_ms + info->starve_mcs;
+	philo->sleep_time_mcs = time_ate_ms + info->eat_mcs;
+	philo->wake_time_mcs = philo->sleep_time_mcs + info->sleep_mcs;
+	philo->eat_time_mcs = time_ate_ms + (2 + info->total_philo % 2) * info->eat_mcs;
 }
