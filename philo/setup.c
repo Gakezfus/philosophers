@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 16:27:08 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/29 18:55:39 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/01/30 19:13:34 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	setup(int eat_limit, char *argv[], t_info *info)
 	info->sleep_mcs = num * 1000ULL;
 	if (eat_limit)
 		info->eat_limit = (int)ft_atoll(argv[5]);
+	info->run = 1;
+	info->end_mcs = 0;
 	return ;
 }
 
@@ -53,7 +55,7 @@ void	set_start_time(t_info *info)
 // For dom hand, 0 is right, 1 is left, assuming clockwise seating
 void	philo_setup(t_info *info, t_philo *philo)
 {
-	philo->die_time_mcs = info->start_mcs + info->starve_mcs;
+	philo->die_mcs = info->start_mcs + info->starve_mcs;
 	philo->dom_hand = philo->philo_num % 2;
 	philo->forks_held = 0;
 	if (philo->philo_num != info->total_philo)

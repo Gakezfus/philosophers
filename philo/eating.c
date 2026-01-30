@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/29 18:55:32 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/01/30 19:13:23 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-void	eating(t_info *info, t_philo *philo);
-void	return_forks(t_info *info, t_philo *philo);
+struct timeval	eating(t_info *info, t_philo *philo);
+void			return_forks(t_info *info, t_philo *philo);
 
 void	grab_fork(t_info *info, t_philo *philo, int fork);
 
 // For dom hand, 0 is right, 1 is left, assuming clockwise seating
-void	eating(t_info *info, t_philo *philo)
+struct timeval eating(t_info *info, t_philo *philo)
 {
 	int				fork_1;
 	int				fork_2;
@@ -39,13 +39,14 @@ void	eating(t_info *info, t_philo *philo)
 			usleep(1000);
 	}
 	gettimeofday(&time, NULL);
-	print_log(1, info->print_mutex, time, philo->philo_num);
 	update_times(info, philo, time);
+	return (time);
 }
 
 void	grab_fork(t_info *info, t_philo *philo, int fork)
 {
-	struct timeval	time;
+	struct timeval		time;
+	unsigned long long	time_ms;
 
 	pthread_mutex_lock(&info->m_forks[fork]);
 	if (info->forks[fork / 64] & 1ULL << (fork % 64))
@@ -53,11 +54,15 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 		info->forks[fork / 64] &= ~(1ULL << fork % 64);
 		pthread_mutex_unlock(&info->m_forks[fork]);
 		gettimeofday(&time, NULL);
-		print_log(0, info->print_mutex, time, philo->philo_num);
+		time_ms = time.tv_sec * 1000000 + time.tv_usec;
+		print_log(0, info->print_mutex, time_ms, philo->philo_num);
 		philo->forks_held++;
 	}
 	else
 		pthread_mutex_unlock(&info->m_forks[fork]);
+	philo->eat_limit++;
+	if (philo->eat_limit == info->eat_limit)
+		info->fully_eaten++;
 }
 
 void	return_forks(t_info *info, t_philo *philo)
