@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 12:00:00 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/30 19:13:31 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/03 21:30:32 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,14 @@ int				wait_till(t_info *info, unsigned long long time_ms,
 					unsigned long long death_ms);
 
 // from eating.c
-struct timeval	eating(t_info *info, t_philo *philo);
-void			return_forks(t_info *info, t_philo *philo);
+unsigned long long	eating(t_info *info, t_philo *philo);
+void				return_forks(t_info *info, t_philo *philo);
 
 // from check_end.c
 int				check_death(t_info *info, t_philo *philo,
-					unsigned long long now_mcs,
+					unsigned long long *now_mcs,
 					unsigned long long death_mcs);
+
+int				shutdown(t_info *info);
 
 #endif

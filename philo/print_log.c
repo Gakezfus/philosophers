@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_log.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/01/30 19:13:30 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/03 21:30:30 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	print_log_2(int act, t_info *info,
 int	print_log(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	if (!info->run && now_ms >= info->end_mcs)
+	if (!info->run || now_ms >= info->end_mcs)
 		return (1);
 	if (act == 0)
 	{

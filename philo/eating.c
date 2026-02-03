@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   eating.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/30 19:13:23 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/03 21:30:32 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,25 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-struct timeval	eating(t_info *info, t_philo *philo);
-void			return_forks(t_info *info, t_philo *philo);
+unsigned long long	eating(t_info *info, t_philo *philo);
+void				return_forks(t_info *info, t_philo *philo);
 
 void	grab_fork(t_info *info, t_philo *philo, int fork);
 
 // For dom hand, 0 is right, 1 is left, assuming clockwise seating
-struct timeval eating(t_info *info, t_philo *philo)
+unsigned long long eating(t_info *info, t_philo *philo)
 {
-	int				fork_1;
-	int				fork_2;
-	struct timeval	time;
+	int					fork_1;
+	int					fork_2;
+	struct timeval		time;
+	unsigned long long	time_mcs;
 
 	fork_1 = philo->fork_i[0];
 	fork_2 = philo->fork_i[1];
-	while (philo->forks_held != 2)
+	gettimeofday(&time, NULL);
+	time_mcs = time.tv_sec * 1000000 + time.tv_usec;
+	while (philo->forks_held != 2 && !check_death(info, philo,
+			&time_mcs, info->starve_mcs))
 	{
 		if (philo->forks_held == 0)
 			grab_fork(info, philo, fork_1);
@@ -37,10 +41,10 @@ struct timeval eating(t_info *info, t_philo *philo)
 			grab_fork(info, philo, fork_2);
 		if (philo->forks_held != 2)
 			usleep(1000);
+		gettimeofday(&time, NULL);
+		time_mcs = time.tv_sec * 1000000 + time.tv_usec;
 	}
-	gettimeofday(&time, NULL);
-	update_times(info, philo, time);
-	return (time);
+	return (time_mcs);
 }
 
 void	grab_fork(t_info *info, t_philo *philo, int fork)

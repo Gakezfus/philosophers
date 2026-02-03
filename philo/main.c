@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/30 19:13:33 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/03 21:30:28 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 	while (index < info.total_philo)
 	{
 		pthread_join(philo[index++], NULL);
-	} 
+	}
+	shutdown(&info);
 }
 
 int	check_input(int argc, char *argv[])

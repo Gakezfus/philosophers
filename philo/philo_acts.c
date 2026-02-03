@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_acts.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:51:45 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/30 19:11:50 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/03 21:30:29 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 #include <stdio.h>
 
 void	*philosopher_act(void *i);
-void	update_times(t_info *info, t_philo *philo, struct timeval time_ate);
+int		update_times(t_info *info, t_philo *philo,
+			long long unsigned int time_ate_mcs);
 
 void	*philosopher_act(void *i)
 {
 	t_philo				philo;
 	t_info				*info;
-	struct timeval		time_ate;
 	unsigned long long	time_ate_ms;
 
 	info = (t_info *)i;
@@ -34,25 +34,33 @@ void	*philosopher_act(void *i)
 	philo_setup(info, &philo);
 	pthread_mutex_lock(&info->r_mutex);
 	pthread_mutex_unlock(&info->r_mutex);
-	time_ate = eating(info, &philo);
-	time_ate_ms = time_ate.tv_sec * 1000000 + time_ate.tv_usec;
-	if (print_log(1, info->print_mutex, time_ate_ms, philo.philo_num)
-		|| wait_till(info, philo.sleep_mcs, philo.die_mcs))
-	// initiate shutdown
-		return (NULL);
-	return_forks(info, &philo);
-	// try to sleep
-	// try to think
-	return (NULL);
+	while (info->run)
+	{
+		time_ate_ms = eating(info, &philo);
+		print_log(1, info->print_mutex, time_ate_ms, philo.philo_num);
+		if (update_times(info, &philo, time_ate_ms))
+			return (NULL);
+		if (wait_till(info, philo.sleep_mcs, philo.die_mcs))
+			return (NULL);
+		return_forks(info, &philo);
+		print_log(2, info->print_mutex, philo.sleep_mcs, philo.philo_num);
+		if (wait_till(info, philo.sleep_mcs, philo.die_mcs))
+			return (NULL);
+		print_log(3, info->print_mutex, philo.sleep_mcs, philo.philo_num);
+		if (wait_till(info, philo.eat_mcs, philo.die_mcs))
+			return (NULL);
+	}
 }
 
-void	update_times(t_info *info, t_philo *philo, struct timeval time_ate)
+// If simulation has ended, initiates shutdown
+int	update_times(t_info *info, t_philo *philo,
+			long long unsigned int time_ate_mcs)
 {
-	long long unsigned int	time_ate_mcs;
-
-	time_ate_mcs = time_ate.tv_sec * 1000000 + time_ate.tv_usec;
+	if (!info->run)
+		return (1);
 	philo->die_mcs = time_ate_mcs + info->starve_mcs;
 	philo->sleep_mcs = time_ate_mcs + info->eat_mcs;
 	philo->wake_mcs = philo->sleep_mcs + info->sleep_mcs;
 	philo->eat_mcs = time_ate_mcs + (2 + info->total_philo % 2) * info->eat_mcs;
+	return (0);
 }
