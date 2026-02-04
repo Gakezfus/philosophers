@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   eating.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/03 21:30:32 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/04 14:50:24 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,15 @@
 
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdio.h>
 
 unsigned long long	eating(t_info *info, t_philo *philo);
 void				return_forks(t_info *info, t_philo *philo);
 
-void	grab_fork(t_info *info, t_philo *philo, int fork);
+void				grab_fork(t_info *info, t_philo *philo, int fork);
 
 // For dom hand, 0 is right, 1 is left, assuming clockwise seating
-unsigned long long eating(t_info *info, t_philo *philo)
+unsigned long long	eating(t_info *info, t_philo *philo)
 {
 	int					fork_1;
 	int					fork_2;
@@ -33,7 +34,7 @@ unsigned long long eating(t_info *info, t_philo *philo)
 	gettimeofday(&time, NULL);
 	time_mcs = time.tv_sec * 1000000 + time.tv_usec;
 	while (philo->forks_held != 2 && !check_death(info, philo,
-			&time_mcs, info->starve_mcs))
+			time_mcs, philo->die_mcs))
 	{
 		if (philo->forks_held == 0)
 			grab_fork(info, philo, fork_1);
@@ -53,13 +54,14 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 	unsigned long long	time_ms;
 
 	pthread_mutex_lock(&info->m_forks[fork]);
+	// printf("%i: forks: %llu\n", philo->philo_num, info->forks[fork / 64] & 1ULL << (fork % 64));
 	if (info->forks[fork / 64] & 1ULL << (fork % 64))
 	{
 		info->forks[fork / 64] &= ~(1ULL << fork % 64);
 		pthread_mutex_unlock(&info->m_forks[fork]);
 		gettimeofday(&time, NULL);
 		time_ms = time.tv_sec * 1000000 + time.tv_usec;
-		print_log(0, info->print_mutex, time_ms, philo->philo_num);
+		print_log(0, info, time_ms - info->start_mcs, philo->philo_num);
 		philo->forks_held++;
 	}
 	else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/03 21:30:28 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/04 13:54:23 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 int	check_input(int argc, char *argv[]);
 
+// TODO: Make Norm compliant
 int	main(int argc, char *argv[])
 {
 	int			index;
@@ -47,7 +48,6 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 	}
 	set_start_time(&info);
 	pthread_mutex_unlock(&info.r_mutex);
-	// Waits for threads
 	index = 0;
 	while (index < info.total_philo)
 	{

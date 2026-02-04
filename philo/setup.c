@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 16:27:08 by elkan             #+#    #+#             */
-/*   Updated: 2026/01/30 19:13:34 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/04 13:56:40 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	setup(int eat_limit, char *argv[], t_info *info)
 
 void	set_start_time(t_info *info)
 {
-	struct timeval time;
+	struct timeval	time;
 
 	gettimeofday(&time, NULL);
 	info->start_mcs = time.tv_sec * 1000000 + time.tv_usec;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 12:00:00 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/03 21:30:32 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/04 14:25:16 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,32 +52,37 @@ typedef struct philosopher
 }	t_philo;
 
 // from ft_atoll.c
-long long int	ft_atoll(const char *str);
+long long int		ft_atoll(const char *str);
 
 // from setup.c
-void			setup(int eat_limit, char *argv[], t_info *data);
-void			find_fork_index(t_info *info, t_philo *philo);
+void				setup(int eat_limit, char *argv[], t_info *data);
+void				find_fork_index(t_info *info, t_philo *philo);
+void				philo_setup(t_info *info, t_philo *philo);
+void				set_start_time(t_info *info);
 
 // from phillosophers.c
-void			*philosopher_act(void *i);
-void			update_times(info, philo, time);
+void				*philosopher_act(void *i);
+int					update_times(t_info *info, t_philo *philo,
+						long long unsigned int time_ate_mcs);
 
 // from print_log.c
-int				print_log(int act, pthread_mutex_t print_mutex,
-					unsigned long long now_mcs, int philo_num);
+int					print_log(int act, t_info *info,
+						unsigned long long now_ms, int philo_num);
+
 // from wait_till.c
-int				wait_till(t_info *info, unsigned long long time_ms,
-					unsigned long long death_ms);
+int					wait_till(t_info *info, t_philo *philo,
+								unsigned long long timemcs,
+								unsigned long long death_mcs);
 
 // from eating.c
 unsigned long long	eating(t_info *info, t_philo *philo);
 void				return_forks(t_info *info, t_philo *philo);
 
 // from check_end.c
-int				check_death(t_info *info, t_philo *philo,
-					unsigned long long *now_mcs,
-					unsigned long long death_mcs);
+int					check_death(t_info *info, t_philo *philo,
+						unsigned long long now_mcs,
+						unsigned long long death_mcs);
 
-int				shutdown(t_info *info);
+int					shutdown(t_info *info);
 
 #endif

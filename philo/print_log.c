@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_log.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/02/03 21:30:30 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/04 14:38:20 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	print_log_2(int act, t_info *info,
 int	print_log(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	if (!info->run || now_ms >= info->end_mcs)
+	if (!info->run && now_ms >= info->end_mcs)
 		return (1);
 	if (act == 0)
 	{
@@ -47,6 +47,8 @@ int	print_log(int act, t_info *info,
 	return (0);
 }
 
+// Note: For death, now_ms given will be death_mcs, so now_ms is equivalent
+// to 
 void	print_log_2(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
@@ -64,7 +66,6 @@ void	print_log_2(int act, t_info *info,
 	}
 	else if (act == 4)
 	{
-		now_ms >= info->end_mcs;
 		info->run = 0;
 		pthread_mutex_lock(&info->print_mutex);
 		printf("%llu %i died\n", now_ms / 1000, philo_num);
