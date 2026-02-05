@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/04 14:50:24 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 14:50:53 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ unsigned long long	eating(t_info *info, t_philo *philo)
 		gettimeofday(&time, NULL);
 		time_mcs = time.tv_sec * 1000000 + time.tv_usec;
 	}
+	if (!info->run)
+		return (0);
 	return (time_mcs);
 }
 
@@ -67,7 +69,7 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 	else
 		pthread_mutex_unlock(&info->m_forks[fork]);
 	philo->eat_limit++;
-	if (philo->eat_limit == info->eat_limit)
+	if (info->eat_limit && philo->eat_limit == info->eat_limit)
 		info->fully_eaten++;
 }
 

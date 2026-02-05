@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:51:45 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/04 14:37:26 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 14:45:03 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	*philosopher_act(void *i)
 	while (info->run)
 	{
 		time_ate_ms = eating(info, &philo);
+		if (!time_ate_ms)
+			return (NULL);
 		print_log(1, info, time_ate_ms - info->start_mcs, philo.philo_num);
 		if (update_times(info, &philo, time_ate_ms))
 			return (NULL);

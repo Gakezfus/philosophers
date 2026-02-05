@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 16:27:08 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/04 13:56:40 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 14:55:11 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <string.h>
+#include <stdio.h>
 
 void	setup(int eat_limit, char *argv[], t_info *info);
 void	philo_setup(t_info *info, t_philo *philo);
@@ -26,11 +27,11 @@ void	setup(int eat_limit, char *argv[], t_info *info)
 	pthread_mutex_init(&(info->r_mutex), NULL);
 	pthread_mutex_init(&(info->p_num_mutex), NULL);
 	pthread_mutex_init(&(info->print_mutex), NULL);
+	info->total_philo = (int)ft_atoll(argv[1]);
 	info->forks = malloc((info->total_philo / 64 + 1) * sizeof(uint64_t));
 	memset(info->forks, 0xFF, (info->total_philo / 64 + 1) * sizeof(uint64_t));
 	info->m_forks = malloc((info->total_philo) * sizeof(pthread_mutex_t));
 	info->philo_num = 0;
-	info->total_philo = (int)ft_atoll(argv[1]);
 	num = ft_atoll(argv[2]);
 	info->starve_mcs = num * 1000ULL;
 	num = ft_atoll(argv[3]);
@@ -58,7 +59,7 @@ void	philo_setup(t_info *info, t_philo *philo)
 	philo->die_mcs = info->start_mcs + info->starve_mcs;
 	philo->dom_hand = philo->philo_num % 2;
 	philo->forks_held = 0;
-	if (philo->philo_num != info->total_philo)
+	if (philo->philo_num != info->total_philo - 1)
 	{
 		philo->fork_i[philo->dom_hand] = philo->philo_num;
 		philo->fork_i[!philo->dom_hand] = philo->philo_num + 1;

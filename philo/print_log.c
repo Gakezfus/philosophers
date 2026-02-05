@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/02/04 14:38:20 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 14:42:55 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	print_log_2(int act, t_info *info,
 int	print_log(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	if (!info->run && now_ms >= info->end_mcs)
+	if (!info->run && now_ms >= info->end_mcs && act != 4)
 		return (1);
 	if (act == 0)
 	{
@@ -43,7 +43,9 @@ int	print_log(int act, t_info *info,
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 	else
+	{
 		print_log_2(act, info, now_ms, philo_num);
+	}
 	return (0);
 }
 
