@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 16:27:08 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/05 14:55:11 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 19:12:57 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ void	setup(int eat_limit, char *argv[], t_info *info)
 	info->sleep_mcs = num * 1000ULL;
 	if (eat_limit)
 		info->eat_limit = (int)ft_atoll(argv[5]);
+	else
+		info->eat_limit = 0;
+	info->fully_eaten = 0;
 	info->run = 1;
 	info->end_mcs = 0;
 	return ;

@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/02/05 14:42:55 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 19:18:57 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	print_log(int act, t_info *info,
 }
 
 // Note: For death, now_ms given will be death_mcs, so now_ms is equivalent
-// to 
+// to death_mcs
 void	print_log_2(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
@@ -68,9 +68,10 @@ void	print_log_2(int act, t_info *info,
 	}
 	else if (act == 4)
 	{
-		info->run = 0;
 		pthread_mutex_lock(&info->print_mutex);
-		printf("%llu %i died\n", now_ms / 1000, philo_num);
+		if (info->run)
+			printf("%llu %i died\n", now_ms / 1000, philo_num);
+		info->run = 0;
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 }

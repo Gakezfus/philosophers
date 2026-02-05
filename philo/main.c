@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/04 13:54:23 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 19:12:22 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 	if (check_input(argc, argv))
 		return (1);
 	setup(argc - 5, argv, &info);
+	set_start_time(&info);
 	philo = malloc(info.total_philo * sizeof(pthread_t));
 	if (philo == NULL || info.forks == NULL || info.m_forks == NULL)
 		return (write(2, "Memory error\n", 1), 1);
@@ -46,14 +47,13 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 		if (pthread_create(&philo[index++], NULL, philosopher_act, (void *)&info))
 			return (write(2, "Thread creation error\n", 23), 1);
 	}
-	set_start_time(&info);
 	pthread_mutex_unlock(&info.r_mutex);
 	index = 0;
 	while (index < info.total_philo)
 	{
 		pthread_join(philo[index++], NULL);
 	}
-	shutdown(&info);
+	shutdown(&info, philo);
 }
 
 int	check_input(int argc, char *argv[])

@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/05 14:50:53 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 19:12:53 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 	unsigned long long	time_ms;
 
 	pthread_mutex_lock(&info->m_forks[fork]);
-	// printf("%i: forks: %llu\n", philo->philo_num, info->forks[fork / 64] & 1ULL << (fork % 64));
 	if (info->forks[fork / 64] & 1ULL << (fork % 64))
 	{
 		info->forks[fork / 64] &= ~(1ULL << fork % 64);
@@ -68,9 +67,6 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 	}
 	else
 		pthread_mutex_unlock(&info->m_forks[fork]);
-	philo->eat_limit++;
-	if (info->eat_limit && philo->eat_limit == info->eat_limit)
-		info->fully_eaten++;
 }
 
 void	return_forks(t_info *info, t_philo *philo)

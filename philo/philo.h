@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 12:00:00 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/04 14:25:16 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/05 18:52:46 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int					check_death(t_info *info, t_philo *philo,
 						unsigned long long now_mcs,
 						unsigned long long death_mcs);
 
-int					shutdown(t_info *info);
+// from shutdown.c						
+int					shutdown(t_info *info, pthread_t *philo);
 
 #endif

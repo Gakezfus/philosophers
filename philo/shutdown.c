@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shutdown.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:25:36 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/03 21:30:27 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/05 18:52:44 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 #include <stdlib.h>
 
-int	shutdown(t_info *info)
+int	shutdown(t_info *info, pthread_t *philo)
 {
 	free(info->forks);
 	free(info->m_forks);
+	free(philo);
 	return (1);
 }
