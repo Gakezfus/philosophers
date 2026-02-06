@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/05 19:12:22 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 17:14:05 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <stdio.h>
 
 int	check_input(int argc, char *argv[]);
+int	run_threads(t_info *info, pthread_t *philo);
 
 // TODO: Make Norm compliant
 int	main(int argc, char *argv[])
@@ -35,19 +36,11 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 	if (check_input(argc, argv))
 		return (1);
 	setup(argc - 5, argv, &info);
-	set_start_time(&info);
 	philo = malloc(info.total_philo * sizeof(pthread_t));
 	if (philo == NULL || info.forks == NULL || info.m_forks == NULL)
 		return (write(2, "Memory error\n", 1), 1);
-	pthread_mutex_lock(&info.r_mutex);
-	index = 0;
-	while (index < info.total_philo)
-	{
-		pthread_mutex_init(&info.m_forks[index], NULL);
-		if (pthread_create(&philo[index++], NULL, philosopher_act, (void *)&info))
-			return (write(2, "Thread creation error\n", 23), 1);
-	}
-	pthread_mutex_unlock(&info.r_mutex);
+	if (run_threads(&info, philo))
+		return (1);
 	index = 0;
 	while (index < info.total_philo)
 	{
@@ -77,5 +70,23 @@ int	check_input(int argc, char *argv[])
 		}
 		index_1++;
 	}
+	return (0);
+}
+
+int	run_threads(t_info *info, pthread_t *philo)
+{
+	int	index;
+
+	pthread_mutex_lock(&(info->r_mutex));
+	index = 0;
+	while (index < info->total_philo)
+	{
+		pthread_mutex_init(&(info->m_forks[index]), NULL);
+		if (pthread_create(&(philo[index++]), NULL,
+				philosopher_act, (void *)info))
+			return (pthread_mutex_unlock(&(info->r_mutex)),
+				write(2, "Thread creation error\n", 23), 1);
+	}
+	pthread_mutex_unlock(&(info->r_mutex));
 	return (0);
 }

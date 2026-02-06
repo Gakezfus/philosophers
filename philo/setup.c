@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 16:27:08 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/05 19:12:57 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 16:48:30 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	setup(int eat_limit, char *argv[], t_info *info)
 	info->fully_eaten = 0;
 	info->run = 1;
 	info->end_mcs = 0;
+	set_start_time(info);
 	return ;
 }
 

@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 12:00:00 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/05 18:52:46 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 16:46:37 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ int					print_log(int act, t_info *info,
 
 // from wait_till.c
 int					wait_till(t_info *info, t_philo *philo,
-								unsigned long long timemcs,
-								unsigned long long death_mcs);
+						unsigned long long timemcs,
+						unsigned long long death_mcs);
 
 // from eating.c
 unsigned long long	eating(t_info *info, t_philo *philo);
