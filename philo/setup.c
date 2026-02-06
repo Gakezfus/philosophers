@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 16:27:08 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/06 16:48:30 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 17:59:06 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void	setup(int eat_limit, char *argv[], t_info *info)
 	info->fully_eaten = 0;
 	info->run = 1;
 	info->end_mcs = 0;
-	set_start_time(info);
 	return ;
 }
 
@@ -60,7 +59,11 @@ void	set_start_time(t_info *info)
 // For dom hand, 0 is right, 1 is left, assuming clockwise seating
 void	philo_setup(t_info *info, t_philo *philo)
 {
-	philo->die_mcs = info->start_mcs + info->starve_mcs;
+	philo->eat_limit = 0;
+	pthread_mutex_lock(&(info->p_num_mutex));
+	philo->philo_num = info->philo_num;
+	info->philo_num++;
+	pthread_mutex_unlock(&(info->p_num_mutex));
 	philo->dom_hand = philo->philo_num % 2;
 	philo->forks_held = 0;
 	if (philo->philo_num != info->total_philo - 1)
@@ -73,4 +76,9 @@ void	philo_setup(t_info *info, t_philo *philo)
 		philo->fork_i[philo->dom_hand] = philo->philo_num;
 		philo->fork_i[!philo->dom_hand] = 0;
 	}
+	pthread_mutex_lock(&info->r_mutex);
+	pthread_mutex_unlock(&info->r_mutex);
+	philo->eat_mcs = info->start_mcs + info->eat_mcs
+		* (philo->philo_num % (2 + info->total_philo % 2));
+	philo->die_mcs = info->start_mcs + info->starve_mcs;
 }

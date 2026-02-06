@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/05 19:12:53 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 18:00:34 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 unsigned long long	eating(t_info *info, t_philo *philo);
 void				return_forks(t_info *info, t_philo *philo);
+void				manage_eat_limit(t_info *info, t_philo *philo);
 
 void				grab_fork(t_info *info, t_philo *philo, int fork);
 
@@ -45,9 +46,28 @@ unsigned long long	eating(t_info *info, t_philo *philo)
 		gettimeofday(&time, NULL);
 		time_mcs = time.tv_sec * 1000000 + time.tv_usec;
 	}
+	// manage_eat_limit(info, philo);
+	philo->eat_limit++;
+	if (info->eat_limit && philo->eat_limit == info->eat_limit)
+	{
+		info->fully_eaten++;
+		if (info->fully_eaten == info->total_philo)
+			info->run = 0;
+	}
 	if (!info->run)
 		return (0);
 	return (time_mcs);
+}
+
+void	manage_eat_limit(t_info *info, t_philo *philo)
+{
+	philo->eat_limit++;
+	if (info->eat_limit && philo->eat_limit == info->eat_limit)
+	{
+		info->fully_eaten++;
+		if (info->fully_eaten == info->total_philo)
+			info->run = 0;
+	}
 }
 
 void	grab_fork(t_info *info, t_philo *philo, int fork)

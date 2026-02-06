@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/06 17:14:05 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 17:23:13 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,7 @@ number_of_times_each_philosopher_must_eat (optional)\n", 130);
 		return (1);
 	index = 0;
 	while (index < info.total_philo)
-	{
 		pthread_join(philo[index++], NULL);
-	}
 	shutdown(&info, philo);
 }
 
@@ -87,6 +85,7 @@ int	run_threads(t_info *info, pthread_t *philo)
 			return (pthread_mutex_unlock(&(info->r_mutex)),
 				write(2, "Thread creation error\n", 23), 1);
 	}
+	set_start_time(info);
 	pthread_mutex_unlock(&(info->r_mutex));
 	return (0);
 }
