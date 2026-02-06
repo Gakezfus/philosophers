@@ -6,7 +6,7 @@
 /*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:51:45 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/06 18:11:03 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/06 18:18:24 by Elkan Choo       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,6 @@ int	update_times(t_info *info, t_philo *philo,
 	philo->sleep_mcs = time_ate_mcs + info->eat_mcs;
 	philo->wake_mcs = philo->sleep_mcs + info->sleep_mcs;
 	philo->eat_mcs = time_ate_mcs + (2 + info->total_philo % 2) * info->eat_mcs;
-	printf("%i: Time to eat: %llu\n", philo->philo_num, (philo->eat_mcs - info->start_mcs) / 1000);
+	// printf("%i: Time to eat: %llu\n", philo->philo_num, (philo->eat_mcs - info->start_mcs) / 1000);
 	return (0);
 }
