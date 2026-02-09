@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 12:00:00 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/06 16:46:37 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/09 22:41:01 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct information
 	unsigned long long	sleep_mcs;
 	unsigned long long	starve_mcs;
 	unsigned long long	end_mcs;
-	uint64_t			*forks;
+	uint8_t				*forks;
 	pthread_mutex_t		*m_forks;
 	int					total_philo;
 	int					philo_num;
@@ -35,6 +35,8 @@ typedef struct information
 	uint8_t				run;
 	pthread_mutex_t		print_mutex;
 	pthread_mutex_t		r_mutex;
+	pthread_mutex_t		eat_lim_mutex;
+	pthread_mutex_t		end_time_mutex;
 }	t_info;
 
 typedef struct philosopher
@@ -77,6 +79,7 @@ int					wait_till(t_info *info, t_philo *philo,
 // from eating.c
 unsigned long long	eating(t_info *info, t_philo *philo);
 void				return_forks(t_info *info, t_philo *philo);
+void				manage_eat_limit(t_info *info, t_philo *philo);
 
 // from check_end.c
 int					check_death(t_info *info, t_philo *philo,

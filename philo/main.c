@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 11:49:21 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/06 17:23:13 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/09 21:39:18 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	run_threads(t_info *info, pthread_t *philo);
 // TODO: Make Norm compliant
 int	main(int argc, char *argv[])
 {
-	int			index;
-	t_info		info;
-	pthread_t	*philo;
+	int				index;
+	static t_info	info;
+	pthread_t		*philo;
 
 	if (argc < 5 || argc > 6)
 	{

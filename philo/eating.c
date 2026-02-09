@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   eating.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 21:34:19 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/06 18:00:34 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/09 22:43:30 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,27 +46,31 @@ unsigned long long	eating(t_info *info, t_philo *philo)
 		gettimeofday(&time, NULL);
 		time_mcs = time.tv_sec * 1000000 + time.tv_usec;
 	}
-	// manage_eat_limit(info, philo);
-	philo->eat_limit++;
-	if (info->eat_limit && philo->eat_limit == info->eat_limit)
-	{
-		info->fully_eaten++;
-		if (info->fully_eaten == info->total_philo)
-			info->run = 0;
-	}
+	pthread_mutex_lock(&info->r_mutex);
 	if (!info->run)
-		return (0);
-	return (time_mcs);
+		return (pthread_mutex_unlock(&info->r_mutex), 0);
+	return (pthread_mutex_unlock(&info->r_mutex), time_mcs);
 }
 
 void	manage_eat_limit(t_info *info, t_philo *philo)
 {
+	int	finished;
+
+	if (!info->eat_limit)
+		return ;
 	philo->eat_limit++;
 	if (info->eat_limit && philo->eat_limit == info->eat_limit)
 	{
+		pthread_mutex_lock(&info->eat_lim_mutex);
 		info->fully_eaten++;
-		if (info->fully_eaten == info->total_philo)
+		finished = info->fully_eaten == info->total_philo;
+		pthread_mutex_unlock(&info->eat_lim_mutex);
+		if (finished)
+		{
+			pthread_mutex_lock(&info->r_mutex);
 			info->run = 0;
+			pthread_mutex_unlock(&info->r_mutex);
+		}
 	}
 }
 
@@ -76,9 +80,9 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 	unsigned long long	time_ms;
 
 	pthread_mutex_lock(&info->m_forks[fork]);
-	if (info->forks[fork / 64] & 1ULL << (fork % 64))
+	if (info->forks[fork])
 	{
-		info->forks[fork / 64] &= ~(1ULL << fork % 64);
+		info->forks[fork] = 0;
 		pthread_mutex_unlock(&info->m_forks[fork]);
 		gettimeofday(&time, NULL);
 		time_ms = time.tv_sec * 1000000 + time.tv_usec;
@@ -86,7 +90,9 @@ void	grab_fork(t_info *info, t_philo *philo, int fork)
 		philo->forks_held++;
 	}
 	else
+	{
 		pthread_mutex_unlock(&info->m_forks[fork]);
+	}
 }
 
 void	return_forks(t_info *info, t_philo *philo)
@@ -96,7 +102,11 @@ void	return_forks(t_info *info, t_philo *philo)
 
 	fork_1 = philo->fork_i[0];
 	fork_2 = philo->fork_i[1];
-	info->forks[fork_1 / 64] |= 1ULL << fork_1 % 64;
-	info->forks[fork_2 / 64] |= 1ULL << fork_2 % 64;
+	pthread_mutex_lock(&info->m_forks[fork_1]);
+	info->forks[fork_1] = 1;
+	pthread_mutex_unlock(&info->m_forks[fork_1]);
+	pthread_mutex_lock(&info->m_forks[fork_2]);
+	info->forks[fork_2] = 1;
+	pthread_mutex_unlock(&info->m_forks[fork_2]);
 	philo->forks_held = 0;
 }

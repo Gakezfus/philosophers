@@ -6,7 +6,7 @@
 #    By: elkan <elkan@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/22 11:49:33 by elkan             #+#    #+#              #
-#    Updated: 2026/01/28 16:17:49 by elkan            ###   ########.fr        #
+#    Updated: 2026/02/09 18:36:26 by elkan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ OBJECTS = $(SOURCES:%.c=%.o)
 
 NAME = philo
 
-CFLAGS = -Wall -Werror -Wextra -I. -g
+CFLAGS = -Wall -Werror -Wextra -I. -g -pthread
 
 all: $(NAME)
 

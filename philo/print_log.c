@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_log.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Elkan Choo <echoo@42mail.sutd.edu.sg>      +#+  +:+       +#+        */
+/*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/02/06 18:09:39 by Elkan Choo       ###   ########.fr       */
+/*   Updated: 2026/02/09 22:55:09 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,13 @@ void	print_log_2(int act, t_info *info,
 int	print_log(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	if (!info->run && now_ms >= info->end_mcs && act != 4)
-		return (1);
+	pthread_mutex_lock(&info->r_mutex);
+	pthread_mutex_lock(&info->end_time_mutex);
+	if ((!info->run) || (info->end_mcs && now_ms < info->end_mcs && act != 4))
+		return (pthread_mutex_unlock(&info->end_time_mutex),
+			pthread_mutex_unlock(&info->r_mutex), 1);
+	pthread_mutex_unlock(&info->r_mutex);
+	pthread_mutex_unlock(&info->end_time_mutex);
 	if (act == 0)
 	{
 		pthread_mutex_lock(&info->print_mutex);
@@ -43,9 +48,7 @@ int	print_log(int act, t_info *info,
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 	else
-	{
 		print_log_2(act, info, now_ms, philo_num);
-	}
 	return (0);
 }
 
@@ -69,9 +72,10 @@ void	print_log_2(int act, t_info *info,
 	else if (act == 4)
 	{
 		pthread_mutex_lock(&info->print_mutex);
-		if (info->run)
-			printf("%llu %i died\n", now_ms / 1000, philo_num);
-		info->run = 0;
+		printf("%llu %i died\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
+		pthread_mutex_lock(&info->r_mutex);
+		info->run = 0;
+		pthread_mutex_unlock(&info->r_mutex);
 	}
 }
