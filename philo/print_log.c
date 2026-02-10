@@ -6,7 +6,7 @@
 /*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/02/09 22:55:09 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/10 13:59:02 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,60 +22,97 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-void	print_log_2(int act, t_info *info,
+int	print_log_2(int act, t_info *info,
 			unsigned long long now_ms, int philo_num);
 
 int	print_log(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	pthread_mutex_lock(&info->r_mutex);
-	pthread_mutex_lock(&info->end_time_mutex);
-	if ((!info->run) || (info->end_mcs && now_ms < info->end_mcs && act != 4))
-		return (pthread_mutex_unlock(&info->end_time_mutex),
-			pthread_mutex_unlock(&info->r_mutex), 1);
-	pthread_mutex_unlock(&info->r_mutex);
-	pthread_mutex_unlock(&info->end_time_mutex);
+	uint8_t 			run;
+	long long unsigned	end_time;
+
 	if (act == 0)
 	{
 		pthread_mutex_lock(&info->print_mutex);
+		pthread_mutex_lock(&info->r_mutex);
+		run = info->run;
+		pthread_mutex_unlock(&info->r_mutex);
+		pthread_mutex_lock(&info->end_time_mutex);
+		end_time = info->end_mcs;
+		pthread_mutex_unlock(&info->end_time_mutex);
+		if ((!run) && (now_ms / 1000 >= end_time))
+			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i has taken a fork\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 	else if (act == 1)
 	{
 		pthread_mutex_lock(&info->print_mutex);
+		pthread_mutex_lock(&info->r_mutex);
+		run = info->run;
+		pthread_mutex_unlock(&info->r_mutex);
+		pthread_mutex_lock(&info->end_time_mutex);
+		end_time = info->end_mcs;
+		pthread_mutex_unlock(&info->end_time_mutex);
+		if ((!run) && (now_ms / 1000 >= end_time))
+			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i is eating\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 	else
-		print_log_2(act, info, now_ms, philo_num);
+		return (print_log_2(act, info, now_ms, philo_num));
 	return (0);
 }
 
 // Note: For death, now_ms given will be death_mcs, so now_ms is equivalent
 // to death_mcs
-void	print_log_2(int act, t_info *info,
+int	print_log_2(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
+	uint8_t 			run;
+	long long unsigned	end_time;
+
 	if (act == 2)
 	{
 		pthread_mutex_lock(&info->print_mutex);
+		pthread_mutex_lock(&info->r_mutex);
+		run = info->run;
+		pthread_mutex_unlock(&info->r_mutex);
+		pthread_mutex_lock(&info->end_time_mutex);
+		end_time = info->end_mcs;
+		pthread_mutex_unlock(&info->end_time_mutex);
+		if ((!run) && (now_ms / 1000 >= end_time))
+			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i is sleeping\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 	else if (act == 3)
 	{
 		pthread_mutex_lock(&info->print_mutex);
+		pthread_mutex_lock(&info->r_mutex);
+		run = info->run;
+		pthread_mutex_unlock(&info->r_mutex);
+		pthread_mutex_lock(&info->end_time_mutex);
+		end_time = info->end_mcs;
+		pthread_mutex_unlock(&info->end_time_mutex);
+		if ((!run) && (now_ms / 1000 >= end_time))
+			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i is thinking\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
 	}
 	else if (act == 4)
 	{
 		pthread_mutex_lock(&info->print_mutex);
+		pthread_mutex_lock(&info->r_mutex);
+		run = info->run;
+		pthread_mutex_unlock(&info->r_mutex);
+		if ((!run))
+			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i died\n", now_ms / 1000, philo_num);
-		pthread_mutex_unlock(&info->print_mutex);
 		pthread_mutex_lock(&info->r_mutex);
 		info->run = 0;
 		pthread_mutex_unlock(&info->r_mutex);
+		pthread_mutex_unlock(&info->print_mutex);
 	}
+	return (0);
 }

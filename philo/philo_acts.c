@@ -6,7 +6,7 @@
 /*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:51:45 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/09 22:50:04 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/10 14:01:06 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,7 @@ void	*philosopher_act(void *i)
 		print_log(3, info, philo.wake_mcs - info->start_mcs, philo.philo_num);
 		pthread_mutex_lock(&info->r_mutex);
 		if (!info->run)
-		{
 			return (pthread_mutex_unlock(&info->r_mutex), NULL);
-		}
 		pthread_mutex_unlock(&info->r_mutex);
 	}
 	return (NULL);
