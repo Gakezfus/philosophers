@@ -6,7 +6,7 @@
 /*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 14:46:13 by Elkan Choo        #+#    #+#             */
-/*   Updated: 2026/02/10 13:59:02 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/11 20:12:23 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,28 @@
 #include <sys/time.h>
 
 int	print_log_2(int act, t_info *info,
-			unsigned long long now_ms, int philo_num);
+		unsigned long long now_ms, int philo_num);
+
+// int	print_setup(int act, t_info *info,
+// 			unsigned long long now_ms, int philo_num)
+// {
+// 	uint8_t				run;
+
+// 	pthread_mutex_lock(&info->print_mutex);
+// 	pthread_mutex_lock(&info->r_mutex);
+// 	run = info->run;
+// 	pthread_mutex_unlock(&info->r_mutex);
+// 	if (!run)
+// 		return (pthread_mutex_unlock(&info->print_mutex), 1);
+// 	printf("%llu %i has taken a fork\n", now_ms / 1000, philo_num);
+// 	pthread_mutex_unlock(&info->print_mutex);
+// 	return (0);
+// }
 
 int	print_log(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	uint8_t 			run;
-	long long unsigned	end_time;
+	uint8_t				run;
 
 	if (act == 0)
 	{
@@ -37,10 +52,7 @@ int	print_log(int act, t_info *info,
 		pthread_mutex_lock(&info->r_mutex);
 		run = info->run;
 		pthread_mutex_unlock(&info->r_mutex);
-		pthread_mutex_lock(&info->end_time_mutex);
-		end_time = info->end_mcs;
-		pthread_mutex_unlock(&info->end_time_mutex);
-		if ((!run) && (now_ms / 1000 >= end_time))
+		if (!run)
 			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i has taken a fork\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
@@ -51,10 +63,7 @@ int	print_log(int act, t_info *info,
 		pthread_mutex_lock(&info->r_mutex);
 		run = info->run;
 		pthread_mutex_unlock(&info->r_mutex);
-		pthread_mutex_lock(&info->end_time_mutex);
-		end_time = info->end_mcs;
-		pthread_mutex_unlock(&info->end_time_mutex);
-		if ((!run) && (now_ms / 1000 >= end_time))
+		if (!run)
 			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i is eating\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
@@ -69,8 +78,7 @@ int	print_log(int act, t_info *info,
 int	print_log_2(int act, t_info *info,
 			unsigned long long now_ms, int philo_num)
 {
-	uint8_t 			run;
-	long long unsigned	end_time;
+	uint8_t				run;
 
 	if (act == 2)
 	{
@@ -78,10 +86,7 @@ int	print_log_2(int act, t_info *info,
 		pthread_mutex_lock(&info->r_mutex);
 		run = info->run;
 		pthread_mutex_unlock(&info->r_mutex);
-		pthread_mutex_lock(&info->end_time_mutex);
-		end_time = info->end_mcs;
-		pthread_mutex_unlock(&info->end_time_mutex);
-		if ((!run) && (now_ms / 1000 >= end_time))
+		if (!run)
 			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i is sleeping\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
@@ -92,10 +97,7 @@ int	print_log_2(int act, t_info *info,
 		pthread_mutex_lock(&info->r_mutex);
 		run = info->run;
 		pthread_mutex_unlock(&info->r_mutex);
-		pthread_mutex_lock(&info->end_time_mutex);
-		end_time = info->end_mcs;
-		pthread_mutex_unlock(&info->end_time_mutex);
-		if ((!run) && (now_ms / 1000 >= end_time))
+		if (!run)
 			return (pthread_mutex_unlock(&info->print_mutex), 1);
 		printf("%llu %i is thinking\n", now_ms / 1000, philo_num);
 		pthread_mutex_unlock(&info->print_mutex);
