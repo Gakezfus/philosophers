@@ -6,7 +6,7 @@
 /*   By: elkan <elkan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 12:00:00 by elkan             #+#    #+#             */
-/*   Updated: 2026/02/09 22:41:01 by elkan            ###   ########.fr       */
+/*   Updated: 2026/02/12 18:31:31 by elkan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ typedef struct information
 	unsigned long long	eat_mcs;
 	unsigned long long	sleep_mcs;
 	unsigned long long	starve_mcs;
-	unsigned long long	end_mcs;
 	uint8_t				*forks;
 	pthread_mutex_t		*m_forks;
 	int					total_philo;
@@ -36,7 +35,6 @@ typedef struct information
 	pthread_mutex_t		print_mutex;
 	pthread_mutex_t		r_mutex;
 	pthread_mutex_t		eat_lim_mutex;
-	pthread_mutex_t		end_time_mutex;
 }	t_info;
 
 typedef struct philosopher
